@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Theoriq Quiz & Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #0a0f14;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #0a0f14;
+      border-bottom: 2px solid #FFFD38;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px 40px;
+    }
+    nav .logo {
+      height: 40px;
+      margin-right: 12px;
+    }
+    nav h1 {
+      color: #FFFD38;
+      font-size: 22px;
+      margin: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      text-align: center;
+      background: #111;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 253, 56, 0.2);
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    h2 {
+      color: #FFFD38;
+      margin-bottom: 20px;
+    }
+    button, a.btn {
+      background: #FFFD38;
+      color: #0a0f14;
+      border: none;
+      padding: 14px;
+      margin-top: 15px;
+      width: 100%;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: block;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    button:hover, a.btn:hover {
+      background: #f2e500;
+      box-shadow: 0 0 10px #FFFD38;
+    }
+    #quiz .option {
+      background: #1a1a1a;
+      border: 2px solid #FFFD38;
+      padding: 12px;
+      margin: 10px 0;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    #quiz .option.correct { background: #2e7d32; }
+    #quiz .option.wrong { background: #c62828; }
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    #result.special {
+      color: #FFFD38;
+      text-shadow: 0 0 10px #FFFD38;
+    }
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      gap: 15px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+    .card {
+      width: 100px;
+      height: 100px;
+      background: #1a1a1a;
+      border: 2px solid #FFFD38;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .card.flipped {
+      background: #FFFD38;
+      color: #0a0f14;
+      font-weight: bold;
+    }
+    #timer {
+      font-size: 18px;
+      margin-top: 10px;
+      color: #FFFD38;
+    }
+    footer {
+      background: #111;
+      padding: 20px;
+      text-align: center;
+      margin-top: 40px;
+      border-top: 2px solid #FFFD38;
+    }
+    footer a {
+      color: #FFFD38;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="https://cdn.prod.website-files.com/66e9164649f92a8503081c8b/66e9164649f92a8503081d84_A_Logotype.svg" alt="Theoriq Logo" class="logo">
+        <h1>Theoriq Quiz & Game</h1>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Quiz Section -->
+  <div id="quiz" class="container active">
+    <h2>Theoriq Knowledge Quiz</h2>
+    <div id="question"></div>
+    <div id="options"></div>
+    <button id="next-btn">Next</button>
+    <div id="result"></div>
+    <button id="share-btn" style="display:none;">Share on X</button>
+    <a id="blog-btn" href="https://www.theoriq.ai/blog" target="_blank" class="btn" style="display:none;">Learn More on Theoriq Blog</a>
+    <button id="game-btn" style="display:none;">Play Theoriq Memory Game 🎮</button>
+    <button id="retry-btn" style="display:none;">🔄 Play Quiz Again</button>
+  </div>
+
+  <!-- Game Section -->
+  <div id="game" class="container">
+    <h2>🧠 Match the Theoriq Symbols</h2>
+    <div id="timer">Time Left: 60s</div>
+    <div class="game-board" id="board"></div>
+    <button onclick="restartGame()">Restart Game</button>
+    <button onclick="switchSection('quiz')">⬅ Back to Quiz</button>
+  </div>
+
+  <footer>
+    <a href="https://x.com/theoriq_ai" target="_blank">Theoriq X</a>
+    <a href="https://discord.gg/Uqb5mA6T" target="_blank">Discord</a>
+    <a href="https://www.theoriq.ai/blog" target="_blank">Blog</a>
+  </footer>
+
+  <script>
+    // ---------- QUIZ ----------
+    let quizData = [
+      { question: "What is Theoriq’s mission?", options: ["A meme coin hub","AI-powered knowledge network","A trading bot"], answer: 1 },
+      { question: "Where did Theoriq recently launch?", options: ["Coinbase","KaitoAI Capital Launchpad","Steam"], answer: 1 },
+      { question: "What is Theoriq focused on?", options: ["AI-driven insights for communities","Selling NFTs of animals","Building a social media app"], answer: 0 },
+      { question: "Who is the founder of Theoriq?", options: ["Vitalik Buterin","Ron Bodkin","Sandeep"], answer: 1 },
+      { question: "Which tech does Theoriq strongly integrate?", options: ["AI","VR","Quantum computing"], answer: 0 },
+      { question: "What type of tool is Theoriq?", options: ["AI Knowledge Network","Gaming Studio","Exchange"], answer: 0 }
+    ];
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const resultEl = document.getElementById("result");
+    const shareBtn = document.getElementById("share-btn");
+    const gameBtn = document.getElementById("game-btn");
+    const blogBtn = document.getElementById("blog-btn");
+    const retryBtn = document.getElementById("retry-btn");
+
+    let currentQ = 0, score = 0;
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function loadQuiz() {
+      quizData = shuffle(quizData);
+      currentQ = 0;
+      score = 0;
+      nextBtn.style.display = "block";
+      resultEl.textContent = "";
+      shareBtn.style.display = "none";
+      blogBtn.style.display = "none";
+      gameBtn.style.display = "none";
+      retryBtn.style.display = "none";
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      let q = quizData[currentQ];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        let div = document.createElement("div");
+        div.textContent = opt;
+        div.className = "option";
+        div.onclick = () => selectOpt(div, i);
+        optionsEl.appendChild(div);
+      });
+    }
+
+    function selectOpt(div, i) {
+      let q = quizData[currentQ];
+      let opts = optionsEl.querySelectorAll(".option");
+      opts.forEach(opt => opt.style.pointerEvents = "none");
+      if (i === q.answer) {
+        div.classList.add("correct");
+        score++;
+      } else {
+        div.classList.add("wrong");
+        opts[q.answer].classList.add("correct");
+      }
+    }
+
+    nextBtn.onclick = () => {
+      currentQ++;
+      if (currentQ < quizData.length) loadQuestion();
+      else showRes();
+      optionsEl.querySelectorAll(".option").forEach(opt => opt.style.pointerEvents = "auto");
+    };
+
+    function showRes() {
+      questionEl.textContent = "";
+      optionsEl.innerHTML = "";
+      nextBtn.style.display = "none";
+
+      if (score === quizData.length) {
+        resultEl.textContent = "🌟 Wow! You are a true Theorian!";
+        resultEl.classList.add("special");
+      } else if (score >= quizData.length / 2) {
+        resultEl.textContent = `Nice job! You scored ${score}/${quizData.length}. Keep learning 🚀`;
+      } else {
+        resultEl.textContent = `You scored ${score}/${quizData.length}. Don’t worry, read the blog and try again 🧠`;
+      }
+
+      shareBtn.style.display = "block";
+      blogBtn.style.display = "block";
+      gameBtn.style.display = "block";
+      retryBtn.style.display = "block";
+    }
+
+    // ✅ Fixed Share-to-X
+    shareBtn.onclick = () => {
+      let text = `I scored ${score}/${quizData.length} on the Theoriq Quiz! 🧠🚀 Try it here:`;
+      window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
+    };
+
+    // ✅ Retry quiz without refreshing
+    retryBtn.onclick = () => loadQuiz();
+
+    loadQuiz();
+
+    // ---------- GAME ----------
+    const board = document.getElementById("board");
+    const timerEl = document.getElementById("timer");
+    let symbols = ["🤖","🚀","📖","💡","🌟","🧠","🔗","⚡"];
+    let cards, flipped, matched, timer, timeLeft;
+
+    function startGame() {
+      cards = [...symbols, ...symbols];
+      flipped = [];
+      matched = [];
+      board.innerHTML = "";
+      cards.sort(() => Math.random() - 0.5);
+      cards.forEach(sym => {
+        let card = document.createElement("div");
+        card.className = "card";
+        card.dataset.value = sym;
+        card.onclick = () => flip(card);
+        board.appendChild(card);
+      });
+      // Start timer
+      clearInterval(timer);
+      timeLeft = 60;
+      timerEl.textContent = "Time Left: " + timeLeft + "s";
+      timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = "Time Left: " + timeLeft + "s";
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          alert("⏱ Time's up! Try again.");
+          restartGame();
+        }
+      }, 1000);
+    }
+
+    function flip(card) {
+      if (flipped.length < 2 && !card.classList.contains("flipped")) {
+        card.textContent = card.dataset.value;
+        card.classList.add("flipped");
+        flipped.push(card);
+      }
+      if (flipped.length === 2) {
+        setTimeout(() => {
+          if (flipped[0].dataset.value === flipped[1].dataset.value) {
+            matched.push(flipped[0], flipped[1]);
+          } else {
+            flipped[0].textContent = "";
+            flipped[1].textContent = "";
+            flipped[0].classList.remove("flipped");
+            flipped[1].classList.remove("flipped");
+          }
+          flipped = [];
+          if (matched.length === cards.length) {
+            clearInterval(timer);
+            alert("🎉 Congrats! You completed the Theoriq Memory Game!");
+          }
+        }, 700);
+      }
+    }
+
+    function restartGame() {
+      startGame();
+    }
+
+    function switchSection(section) {
+      document.querySelectorAll(".container").forEach(c => c.classList.remove("active"));
+      document.getElementById(section).classList.add("active");
+      if (section === "game") startGame();
+      if (section === "quiz") loadQuiz();
+    }
+
+    gameBtn.onclick = () => switchSection("game");
+  </script>
+</body>
+</html>
