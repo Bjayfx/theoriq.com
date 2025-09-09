@@ -159,7 +159,8 @@
     <div id="result"></div>
     <button id="share-btn" style="display:none;">Share on X</button>
     <a id="blog-btn" href="https://www.theoriq.ai/blog" target="_blank" class="btn" style="display:none;">Learn More on Theoriq Blog</a>
-    <button id="game-btn" style="display:none;">Play Theoriq Memory Game 🎮</button>
+    <!-- Game button always visible -->
+    <button id="game-btn">Play Theoriq Memory Game 🎮</button>
     <button id="retry-btn" style="display:none;">🔄 Play Quiz Again</button>
   </div>
 
@@ -224,7 +225,6 @@
       resultEl.textContent = "";
       shareBtn.style.display = "none";
       blogBtn.style.display = "none";
-      gameBtn.style.display = "none";
       retryBtn.style.display = "none";
       loadQuestion();
     }
@@ -257,9 +257,15 @@
 
     nextBtn.onclick = () => {
       currentQ++;
-      if (currentQ < quizData.length) loadQuestion();
-      else showRes();
-      optionsEl.querySelectorAll(".option").forEach(opt => opt.style.pointerEvents = "auto");
+      if (currentQ < quizData.length) {
+        loadQuestion();
+        // ✅ Reset clickability safely
+        if (optionsEl.querySelectorAll(".option").length) {
+          optionsEl.querySelectorAll(".option").forEach(opt => opt.style.pointerEvents = "auto");
+        }
+      } else {
+        showRes();
+      }
     };
 
     function showRes() {
@@ -288,7 +294,6 @@
 
       shareBtn.style.display = "block";
       blogBtn.style.display = "block";
-      gameBtn.style.display = "block";
       retryBtn.style.display = "block";
     }
 
@@ -367,12 +372,6 @@
       if (section === "game") startGame();
       if (section === "quiz") loadQuiz();
     }
-
-    gameBtn.onclick = () => switchSection("game");
-  </script>
-</body>
-</html>
-
 
     gameBtn.onclick = () => switchSection("game");
   </script>
