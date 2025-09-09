@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE html>  
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Theoriq Quiz & Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -19,7 +20,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 15px 40px;
+      padding: 15px 20px;
+      flex-wrap: wrap;
     }
     nav .logo {
       height: 40px;
@@ -27,26 +29,23 @@
     }
     nav h1 {
       color: #FFFD38;
-      font-size: 22px;
+      font-size: 20px;
       margin: 0;
     }
     .container {
       max-width: 700px;
-      margin: 40px auto;
-      padding: 30px;
+      margin: 20px auto;
+      padding: 20px;
       text-align: center;
       background: #111;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(255, 253, 56, 0.2);
       display: none;
     }
-    .active {
-      display: block;
-    }
-    h2 {
-      color: #FFFD38;
-      margin-bottom: 20px;
-    }
+    .active { display: block; }
+
+    h2 { color: #FFFD38; margin-bottom: 20px; }
+
     button, a.btn {
       background: #FFFD38;
       color: #0a0f14;
@@ -66,6 +65,7 @@
       background: #f2e500;
       box-shadow: 0 0 10px #FFFD38;
     }
+
     #quiz .option {
       background: #1a1a1a;
       border: 2px solid #FFFD38;
@@ -77,6 +77,7 @@
     }
     #quiz .option.correct { background: #2e7d32; }
     #quiz .option.wrong { background: #c62828; }
+
     #result {
       font-size: 20px;
       margin-top: 20px;
@@ -86,16 +87,16 @@
       color: #FFFD38;
       text-shadow: 0 0 10px #FFFD38;
     }
+
     .game-board {
       display: grid;
-      grid-template-columns: repeat(4, 100px);
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 10px;
       justify-content: center;
       margin: 20px auto;
     }
     .card {
-      width: 100px;
-      height: 100px;
+      aspect-ratio: 1/1;
       background: #1a1a1a;
       border: 2px solid #FFFD38;
       display: flex;
@@ -110,11 +111,13 @@
       color: #0a0f14;
       font-weight: bold;
     }
+
     #timer {
       font-size: 18px;
       margin-top: 10px;
       color: #FFFD38;
     }
+
     footer {
       background: #111;
       padding: 20px;
@@ -127,6 +130,13 @@
       margin: 0 15px;
       text-decoration: none;
       font-weight: bold;
+    }
+
+    img.result-img {
+      width: 90%;
+      max-width: 400px;
+      margin-top: 10px;
+      border-radius: 12px;
     }
   </style>
 </head>
@@ -176,7 +186,19 @@
       { question: "What is Theoriq focused on?", options: ["AI-driven insights for communities","Selling NFTs of animals","Building a social media app"], answer: 0 },
       { question: "Who is the founder of Theoriq?", options: ["Vitalik Buterin","Ron Bodkin","Sandeep"], answer: 1 },
       { question: "Which tech does Theoriq strongly integrate?", options: ["AI","VR","Quantum computing"], answer: 0 },
-      { question: "What type of tool is Theoriq?", options: ["AI Knowledge Network","Gaming Studio","Exchange"], answer: 0 }
+      { question: "What type of tool is Theoriq?", options: ["AI Knowledge Network","Gaming Studio","Exchange"], answer: 0 },
+
+      // --- 10 New Questions ---
+      { question: "What does Theoriq integrate with AI to ensure transparency?", options: ["Blockchain","Cloud storage","Metaverse"], answer: 0 },
+      { question: "Which community approach does Theoriq emphasize?", options: ["Centralized","Collaborative and decentralized","Closed source"], answer: 1 },
+      { question: "Theoriq agents primarily operate where?", options: ["On-chain","In private servers","Offline"], answer: 0 },
+      { question: "What does Theoriq aim to provide for communities?", options: ["Random entertainment","AI-driven knowledge and insights","Traditional banking services"], answer: 1 },
+      { question: "Which phrase best describes Theoriq’s vision?", options: ["Knowledge as a shared resource","Exclusive elite data club","Gaming-first approach"], answer: 0 },
+      { question: "How does Theoriq ensure trust in AI?", options: ["By making outputs transparent","By selling tokens","By hiding algorithms"], answer: 0 },
+      { question: "What kind of economy is Theoriq helping to build?", options: ["Agentic economy","Traditional finance economy","Barter economy"], answer: 0 },
+      { question: "Which industry does Theoriq directly empower?", options: ["Communities and researchers","Only gamers","Fashion designers"], answer: 0 },
+      { question: "What does Theoriq combine to shape the future?", options: ["Blockchain + AI","AI + Fashion","Crypto + Memes"], answer: 0 },
+      { question: "What kind of AI model foundation is Theoriq building?", options: ["Decentralized and community-driven","Closed and proprietary","Centralized only"], answer: 0 }
     ];
 
     const questionEl = document.getElementById("question");
@@ -245,14 +267,24 @@
       optionsEl.innerHTML = "";
       nextBtn.style.display = "none";
 
+      let msg = document.createElement("div");
+      msg.style.marginBottom = "10px";
       if (score === quizData.length) {
-        resultEl.textContent = "🌟 Wow! You are a true Theorian!";
-        resultEl.classList.add("special");
+        msg.textContent = "🌟 Wow! You are a true Theorian!";
+        msg.classList.add("special");
       } else if (score >= quizData.length / 2) {
-        resultEl.textContent = `Nice job! You scored ${score}/${quizData.length}. Keep learning 🚀`;
+        msg.textContent = `Nice job! You scored ${score}/${quizData.length}. Keep learning 🚀`;
       } else {
-        resultEl.textContent = `You scored ${score}/${quizData.length}. Don’t worry, read the blog and try again 🧠`;
+        msg.textContent = `You scored ${score}/${quizData.length}. Don’t worry, read the blog and try again 🧠`;
       }
+      resultEl.innerHTML = "";
+      resultEl.appendChild(msg);
+
+      let img = document.createElement("img");
+      img.src = "https://i.imgur.com/AFu95hO.png";
+      img.alt = "Quiz Result Image";
+      img.className = "result-img";
+      resultEl.appendChild(img);
 
       shareBtn.style.display = "block";
       blogBtn.style.display = "block";
@@ -260,13 +292,11 @@
       retryBtn.style.display = "block";
     }
 
-    // ✅ Fixed Share-to-X
     shareBtn.onclick = () => {
       let text = `I scored ${score}/${quizData.length} on the Theoriq Quiz! 🧠🚀 Try it here:`;
       window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
     };
 
-    // ✅ Retry quiz without refreshing
     retryBtn.onclick = () => loadQuiz();
 
     loadQuiz();
@@ -290,7 +320,6 @@
         card.onclick = () => flip(card);
         board.appendChild(card);
       });
-      // Start timer
       clearInterval(timer);
       timeLeft = 60;
       timerEl.textContent = "Time Left: " + timeLeft + "s";
@@ -330,9 +359,7 @@
       }
     }
 
-    function restartGame() {
-      startGame();
-    }
+    function restartGame() { startGame(); }
 
     function switchSection(section) {
       document.querySelectorAll(".container").forEach(c => c.classList.remove("active"));
@@ -340,6 +367,12 @@
       if (section === "game") startGame();
       if (section === "quiz") loadQuiz();
     }
+
+    gameBtn.onclick = () => switchSection("game");
+  </script>
+</body>
+</html>
+
 
     gameBtn.onclick = () => switchSection("game");
   </script>
